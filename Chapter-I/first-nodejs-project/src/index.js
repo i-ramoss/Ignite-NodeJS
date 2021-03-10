@@ -9,6 +9,18 @@ app.use(express.json())
 
 const customers = []
 
+function verifyIfExistsAccountCPF(request, response, next) {
+  const { cpf } = request.headers
+
+  const customer = customers.find( customer => customer.cpf === cpf)
+
+  if (!customer) return response.status(404).json({ err: 'Customer do not exists!' })
+
+  request.customer = customer
+
+  next()
+}
+
 app.post('/account', (request, response) => {
   const { name, cpf } = request.body
 
@@ -26,12 +38,8 @@ app.post('/account', (request, response) => {
   return response.status(201).send(customers)
 })
 
-app.get('/statement/:cpf', (request, response) => {
-  const { cpf } = request.params
-
-  const customer = customers.find( customer => customer.cpf === cpf)
-
-  if (!customer) return response.status(404).json({ err: 'Customer do not exists!' })
+app.get('/statement', verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request
 
   if (customer.statement.length == 0) return response.status(204).json(customer.statement)
 

@@ -21,6 +21,15 @@ function verifyIfExistsAccountCPF(request, response, next) {
   next()
 }
 
+function getBalance(statement) {
+  const balance = statement.reduce((acc, operation) => {
+    if (operation.type === 'credit') return acc + operation.amount
+    else return acc - operation.amount
+  }, 0)
+
+  return balance
+}
+
 app.post('/account', (request, response) => {
   const { name, cpf } = request.body
 
@@ -50,11 +59,34 @@ app.post('/deposit', verifyIfExistsAccountCPF, (request, response) => {
   const { amount, description } = request.body
   const { customer } = request
 
+  if (amount <= 0) return response.status(400).json({ err: 'You cannot deposit amounts below R$ 1.00' })
+
   const statementOperation = {
     amount,
     description,
     created_at: new Date(),
-    type: "credit"
+    type: 'credit'
+  }
+
+  customer.statement.push(statementOperation)
+
+  return response.status(201).send(customer)
+})
+
+app.post('/withdraw', verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request
+  const { amount } = request.body
+
+  if (amount <= 0) return response.status(400).json({ err: 'You cannot withdraw amounts below R$ 1.00' })
+
+  const balance = getBalance(customer.statement)
+
+  if(balance < amount) return response.status(400).json({ error: 'Insufficient funds!' })
+
+  const statementOperation = {
+    amount,
+    created_at: new Date(),
+    type: 'debit'
   }
 
   customer.statement.push(statementOperation)

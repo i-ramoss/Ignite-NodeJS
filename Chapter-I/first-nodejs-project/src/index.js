@@ -73,7 +73,7 @@ app.delete('/account', verifyIfExistsAccountCPF, (request, response) => {
 app.get('/statement', verifyIfExistsAccountCPF, (request, response) => {
   const { customer } = request
 
-  if (customer.statement.length == 0) return response.status(204).json(customer.statement)
+  if (customer.statement.length == 0) return response.status(200).json({ message: 'Empty' })
 
   return response.status(201).json(customer.statement)
 })
@@ -87,6 +87,8 @@ app.get('/statement/:date', verifyIfExistsAccountCPF, (request, response) => {
   const statement = customer.statement.filter( statement => 
     statement.created_at.toDateString() === new Date(dateFormat).toDateString()
   )
+
+  if (statement.length == 0) return response.status(200).json({ message: 'There were no transactions on this date' })
 
   return response.json(statement)
 })
@@ -128,6 +130,14 @@ app.post('/withdraw', verifyIfExistsAccountCPF, (request, response) => {
   customer.statement.push(statementOperation)
 
   return response.status(201).send(customer)
+})
+
+app.get('/balance', verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request
+
+  const balance = getBalance(customer.statement)
+
+  return response.json(balance)
 })
 
 .listen(PORT, () => console.log(`🔥 Server started at http://localhost:${PORT}`))

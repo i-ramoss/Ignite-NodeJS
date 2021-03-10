@@ -26,4 +26,16 @@ app.post('/account', (request, response) => {
   return response.status(201).send(customers)
 })
 
+app.get('/statement/:cpf', (request, response) => {
+  const { cpf } = request.params
+
+  const customer = customers.find( customer => customer.cpf === cpf)
+
+  if (!customer) return response.status(404).json({ err: 'Customer do not exists!' })
+
+  if (customer.statement.length == 0) return response.status(204).json(customer.statement)
+
+  return response.json(customer.statement)
+})
+
 .listen(PORT, () => console.log(`🔥 Server started at http://localhost:${PORT}`))

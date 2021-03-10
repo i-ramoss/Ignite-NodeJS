@@ -46,4 +46,20 @@ app.get('/statement', verifyIfExistsAccountCPF, (request, response) => {
   return response.json(customer.statement)
 })
 
+app.post('/deposit', verifyIfExistsAccountCPF, (request, response) => {
+  const { amount, description } = request.body
+  const { customer } = request
+
+  const statementOperation = {
+    amount,
+    description,
+    created_at: new Date(),
+    type: "credit"
+  }
+
+  customer.statement.push(statementOperation)
+
+  return response.status(201).send(customer)
+})
+
 .listen(PORT, () => console.log(`🔥 Server started at http://localhost:${PORT}`))

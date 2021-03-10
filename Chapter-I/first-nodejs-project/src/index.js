@@ -50,7 +50,7 @@ app.post('/account', (request, response) => {
 app.get('/account', verifyIfExistsAccountCPF, (request, response) => {
   const { customer } = request
 
-  return response.send(customer)
+  return response.json(customer)
 })
 
 app.put('/account', verifyIfExistsAccountCPF, (request, response) => {
@@ -59,7 +59,15 @@ app.put('/account', verifyIfExistsAccountCPF, (request, response) => {
 
   customer.name = name
 
-  return response.send(customer)
+  return response.json(customer)
+})
+
+app.delete('/account', verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request
+
+  customers.splice(customer, 1)
+
+  return response.status(200).json(customers)
 })
 
 app.get('/statement', verifyIfExistsAccountCPF, (request, response) => {
@@ -67,7 +75,20 @@ app.get('/statement', verifyIfExistsAccountCPF, (request, response) => {
 
   if (customer.statement.length == 0) return response.status(204).json(customer.statement)
 
-  return response.status(201).send(customer.statement)
+  return response.status(201).json(customer.statement)
+})
+
+app.get('/statement/:date', verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request
+  const { date } = request.query
+
+  const dateFormat = new Date(date + ' 00:00')
+
+  const statement = customer.statement.filter( statement => 
+    statement.created_at.toDateString() === new Date(dateFormat).toDateString()
+  )
+
+  return response.json(statement)
 })
 
 app.post('/deposit', verifyIfExistsAccountCPF, (request, response) => {
@@ -107,21 +128,6 @@ app.post('/withdraw', verifyIfExistsAccountCPF, (request, response) => {
   customer.statement.push(statementOperation)
 
   return response.status(201).send(customer)
-})
-
-app.get('/statement/:date', verifyIfExistsAccountCPF, (request, response) => {
-  const { customer } = request
-  const { date } = request.query
-
-  const dateFormat = new Date(date + ' 00:00')
-
-  const statement = customer.statement.filter( statement => 
-    statement.created_at.toDateString() === new Date(dateFormat).toDateString()
-  )
-
-  console.log(dateFormat)
-
-  return response.send(statement)
 })
 
 .listen(PORT, () => console.log(`🔥 Server started at http://localhost:${PORT}`))

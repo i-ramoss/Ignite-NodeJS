@@ -47,12 +47,27 @@ app.post('/account', (request, response) => {
   return response.status(201).send(customers)
 })
 
+app.get('/account', verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request
+
+  return response.send(customer)
+})
+
+app.put('/account', verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request
+  const { name } = request.body
+
+  customer.name = name
+
+  return response.send(customer)
+})
+
 app.get('/statement', verifyIfExistsAccountCPF, (request, response) => {
   const { customer } = request
 
   if (customer.statement.length == 0) return response.status(204).json(customer.statement)
 
-  return response.json(customer.statement)
+  return response.status(201).send(customer.statement)
 })
 
 app.post('/deposit', verifyIfExistsAccountCPF, (request, response) => {
@@ -106,7 +121,7 @@ app.get('/statement/:date', verifyIfExistsAccountCPF, (request, response) => {
 
   console.log(dateFormat)
 
-  return response.json(statement)
+  return response.send(statement)
 })
 
 .listen(PORT, () => console.log(`🔥 Server started at http://localhost:${PORT}`))

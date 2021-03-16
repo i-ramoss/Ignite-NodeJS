@@ -1,17 +1,18 @@
 import { Request, Response } from 'express';
-import CreateCourseService from './CreateCourseService'
+
+import CreateCourseService from './CreateCourseService';
 
 export function createCourse(request: Request, response: Response) {
   CreateCourseService.execute({
     name: 'Ignite NodeJS',
-    educator: 'Dani Evengalista'
-  })
+    educator: 'Dani Evengalista',
+  });
 
   CreateCourseService.execute({
     name: 'Ignite ReactJS',
     educator: 'Diego Fernandes',
-    duration: 10
-  })
+    duration: 10,
+  });
 
-  return response.json()
+  return response.json();
 }

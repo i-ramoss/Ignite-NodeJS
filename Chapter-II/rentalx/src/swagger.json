@@ -2,18 +2,31 @@
   "openapi": "3.0.0",
   "info": {
     "title": "RentalX Documentation",
-    "description": "This is an API Rent",
+    "description": "This is an API developed for the management of a car rental",
     "version": "1.0.0",
     "contact": {
+      "name": "Developer - Ian Ramos",
       "email": "ianramossantos@hotmail.com"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT" 
     }
   },
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "Local server"
+    }
+  ],
   "paths": {
     "/categories": {
       "post": {
         "tags": ["Category"],
         "summary": "Create a category",
-        "description": "Create a new category",
+        "description": "Create a new car category",
+        "operationId": "createCategory",
+        "parameters": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -57,7 +70,7 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "property": {
+                    "properties": {
                       "name": {
                         "type": "string"
                       },

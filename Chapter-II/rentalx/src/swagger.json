@@ -34,10 +34,10 @@
                 "type": "object",
                 "properties": {
                   "name": {
-                    "$ref": "#/components/schemas/name"
+                    "$ref": "#/components/schemas/categoryName"
                   },
                   "description": {
-                    "$ref": "#/components/schemas/description"
+                    "$ref": "#/components/schemas/categoryDescription"
                   }
                 }
               }
@@ -68,25 +68,16 @@
       "get": {
         "tags": ["Category"],
         "summary": "List all categories",
-        "description": "List all categories",
+        "description": "List all categories registered in the application",
+        "operationId": "listAllCategories",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Listing successful",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "description": {
-                        "type": "string"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/ListedCategoriesResponse"
                 }
               }
             }
@@ -97,15 +88,48 @@
   },
   "components": {
     "schemas": {
-      "name": {
+      "categoryId": {
+        "type": "string",
+        "format": "uuid",
+        "description": "The unique category ID"
+      },
+      "categoryName": {
         "type": "string",
         "description": "Category name to be registered",
         "example": "SUV"
       },
-      "description": {
+      "categoryDescription": {
         "type": "string",
         "description": "Category description to be registered",
         "example": "The acronym SUV stands for Sport Utility Vehicle - that is, sports utility vehicle. SUVs are usually large in size, with a spacious interior and the possibility to travel in and out of the city"
+      },
+      "categoryCreated_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Category creation date"
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/categoryId"
+          },
+          "name": {
+            "$ref": "#/components/schemas/categoryName"
+          },
+          "description": {
+            "$ref": "#/components/schemas/categoryDescription"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/categoryCreated_at"
+          }
+        }
+      },
+      "ListedCategoriesResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Category"
+        }
       },
       "Error": {
         "type": "object",

@@ -6,11 +6,15 @@ class ImportCategoryController {
   constructor(private importCategoryUseCase: ImportCategoryUseCase) {}
 
   handle(request: Request, response: Response): Response {
-    const { file } = request;
+    try {
+      const { file } = request;
 
-    this.importCategoryUseCase.execute(file);
+      this.importCategoryUseCase.execute(file);
 
-    return response.send();
+      return response.send();
+    } catch (err) {
+      return response.status(500).json({ error: err.message });
+    }
   }
 }
 

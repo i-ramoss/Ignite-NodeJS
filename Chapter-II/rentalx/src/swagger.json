@@ -1,7 +1,7 @@
  {
   "openapi": "3.0.0",
   "info": {
-    "title": "RentalX Documentation",
+    "title": "RentX Documentation",
     "description": "This is an API developed for the management of a car rental",
     "version": "1.0.0",
     "contact": {
@@ -49,7 +49,7 @@
             "description": "The category has been created"
           },
           "400": {
-            "description": "The category is already registered in the system",
+            "description": "The category is already registered in the application",
             "content": {
               "application/json": {
                 "schema": {
@@ -113,6 +113,52 @@
           }
         }
       }
+    },
+    "/specifications": {
+      "post": {
+        "tags": ["Specifications"],
+        "summary": "Create a specification",
+        "description": "Create a new car specification",
+        "operationId": "createSpecification",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "$ref": "#/components/schemas/specificationName"
+                  },
+                  "description": {
+                    "$ref": "#/components/schemas/specificationDescription"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The specification has been created"
+          },
+          "400": {
+            "description": "The specification is already registered in the application",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "message": "The specification already exists",
+                  "code": "400",
+                  "error": "Bad Request"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -136,6 +182,16 @@
         "type": "string",
         "format": "date-time",
         "description": "Category creation date"
+      },
+      "specificationName": {
+        "type": "string",
+        "description": "Name of the specification of a car to be registered",
+        "example": "Automatic gearbox"
+      },
+      "specificationDescription": {
+        "type": "string",
+        "description": "Description of the specification of a car to be registered",
+        "example": "Car with automatic transmission"
       },
       "Category": {
         "type": "object",
